@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة العلوم التفاعلية</title>
+<style>
+*{box-sizing:border-box;font-family:'Tahoma',sans-serif} body{margin:0;background:#7a0019;color:#333}.container{max-width:800px;margin:auto;padding:20px}.card{background:#fff;padding:25px;border-radius:20px;box-shadow:0 5px 15px rgba(0,0,0,.2);margin-top:30px}h1,h2,h3{text-align:center;color:#7a0019}input[type=text]{width:100%;padding:12px;font-size:18px;border:2px solid #7a0019;border-radius:10px}button{background:#7a0019;color:white;border:none;padding:12px 25px;border-radius:12px;font-size:18px;cursor:pointer}button:hover{opacity:.9}.option{display:block;padding:12px;margin:10px 0;border:2px solid #ddd;border-radius:10px;cursor:pointer}.option:hover{background:#f7f7f7}.progress{height:15px;background:#ddd;border-radius:20px;overflow:hidden;margin-bottom:20px}.progress-bar{height:100%;width:0%;background:#7a0019;transition:.5s}.timer{text-align:center;font-size:22px;font-weight:bold;color:#7a0019;margin-bottom:15px}.hidden{display:none}.certificate{border:8px double #7a0019;padding:30px;border-radius:20px;background:white;text-align:center;margin-top:20px}.score{font-size:28px;color:#7a0019;font-weight:bold}@media print{body{background:white}.container{max-width:none;padding:0}.card{box-shadow:none;border:0}.certificate{break-inside:avoid}button{display:none}.hidden{display:none!important}}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="startScreen" class="card">
+<h1>🔬 لعبة العلوم التفاعلية</h1>
+<p style="text-align:center">أدخلي اسمك ثم ابدئي التحدي</p>
+<input type="text" id="studentName" placeholder="اسم الطالبة">
+<br><br>
+<div style="text-align:center"><button onclick="startQuiz()">ابدئي التحدي</button></div>
+</div>
+<div id="quizScreen" class="card hidden">
+<div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+<div id="questionNumber" style="text-align:center"></div>
+<div id="timer" class="timer">20</div>
+<h2 id="questionText"></h2>
+<div id="options"></div>
+</div>
+<div id="resultScreen" class="card hidden">
+<h2>🎉 انتهى التحدي</h2>
+<div id="finalResult"></div>
+<div class="certificate" id="certificate">
+<h2>شهادة إنجاز</h2>
+<p>تشهد لعبة العلوم التفاعلية بأن</p>
+<h2 id="certName"></h2>
+<p>قد أتمت بنجاح التحدي العلمي وحصلت على</p>
+<div id="certScore" class="score"></div>
+<p>مع أطيب التمنيات بالمزيد من التميز والنجاح</p>
+<h3>معلمة العلوم</h3>
+<h3>منال سليم أبي المنى</h3>
+</div>
+<br>
+<div style="text-align:center"><button onclick="window.print()">🖨 طباعة الشهادة</button></div>
+</div>
+</div>
+<script>
+const questions=[
+{question:"أي جهاز مسؤول عن هضم الطعام وامتصاصه؟",options:["الجهاز التنفسي","الجهاز الدوري","الجهاز الهضمي","الجهاز البولي"],answer:2},
+{question:"ما العضو الذي يضخ الدم إلى جميع أنحاء الجسم؟",options:["الرئتان","القلب","الكليتان","المعدة"],answer:1},
+{question:"أي الأعضاء التالية تنقي الدم من الفضلات السائلة؟",options:["الكبد","الرئتان","الكليتان","الأمعاء الدقيقة"],answer:2},
+{question:"يتم تبادل الغازات داخل؟",options:["القلب","الرئتين","المعدة","المثانة"],answer:1},
+{question:"أي التغيرات التالية يعد تغيراً فيزيائياً؟",options:["احتراق الورق","انصهار الثلج","صدأ الحديد","خبز الخبز"],answer:1},
+{question:"من دلائل حدوث التغير الكيميائي؟",options:["تغير الحجم فقط","تغير اللون أو انطلاق غاز","تغير الشكل فقط","الذوبان فقط"],answer:1},
+{question:"أي المواد التالية تذوب في الماء؟",options:["الرمل","الملح","الزيت","الخشب"],answer:1},
+{question:"ما وظيفة المفتاح الكهربائي؟",options:["إنتاج الضوء","تشغيل وإيقاف التيار الكهربائي","قياس شدة التيار","توصيل الكهرباء فقط"],answer:1},
+{question:"أي مادة تعد موصلاً جيداً للكهرباء؟",options:["البلاستيك","الخشب","النحاس","المطاط"],answer:2},
+{question:"يسري التيار الكهربائي في الدائرة من:",options:["القطب الموجب إلى القطب السالب","القطب السالب إلى القطب الموجب","المصباح إلى البطارية","المفتاح إلى السلك"],answer:0}
+];
+let currentQuestion=0,score=0,timer,timeLeft=20,studentName="";
+function startQuiz(){studentName=document.getElementById("studentName").value.trim();if(studentName===""){alert("يرجى إدخال الاسم");return}document.getElementById("startScreen").classList.add("hidden");document.getElementById("quizScreen").classList.remove("hidden");loadQuestion()}
+function loadQuestion(){if(currentQuestion>=questions.length){showResult();return}let q=questions[currentQuestion];document.getElementById("questionNumber").innerHTML="السؤال "+(currentQuestion+1)+" من 10";document.getElementById("questionText").innerHTML=q.question;document.getElementById("progressBar").style.width=((currentQuestion)/questions.length*100)+"%";let optionsHTML="";q.options.forEach((option,index)=>{optionsHTML+=`<div class="option" onclick="selectAnswer(${index})">${option}</div>`});document.getElementById("options").innerHTML=optionsHTML;startTimer()}
+function startTimer(){clearInterval(timer);timeLeft=20;document.getElementById("timer").innerHTML=timeLeft;timer=setInterval(()=>{timeLeft--;document.getElementById("timer").innerHTML=timeLeft;if(timeLeft<=0){clearInterval(timer);currentQuestion++;loadQuestion()}},1000)}
+function selectAnswer(index){clearInterval(timer);if(index===questions[currentQuestion].answer)score++;currentQuestion++;loadQuestion()}
+function showResult(){clearInterval(timer);document.getElementById("quizScreen").classList.add("hidden");document.getElementById("resultScreen").classList.remove("hidden");let level="";if(score>=9)level="🏆 ممتازة";else if(score>=7)level="🌟 متميزة";else if(score>=5)level="👍 جيدة";else level="📚 تحتاج إلى مراجعة";document.getElementById("finalResult").innerHTML=`<h2 style="text-align:center">${studentName}</h2><h3>${score}/10</h3><h3>${level}</h3>`;document.getElementById("certName").innerHTML=studentName;document.getElementById("certScore").innerHTML=`${score} / 10`}
+</script>
+</body>
+</html>

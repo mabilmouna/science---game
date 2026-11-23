@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رمز QR للعبة العلوم</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>body{font-family:Tahoma,sans-serif;text-align:center;background:#7a0019;color:#333;margin:0;padding:30px}.card{max-width:520px;margin:auto;background:white;border-radius:20px;padding:30px}#qrcode{display:flex;justify-content:center;margin:24px 0}.url{direction:ltr;word-break:break-all;background:#eee;padding:10px;border-radius:8px}@media print{body{background:white;padding:0}.card{box-shadow:none}}</style>
+</head>
+<body>
+<div class="card">
+<h1>لعبة العلوم التفاعلية</h1>
+<p>امسحي رمز QR لفتح اللعبة على الهاتف</p>
+<div id="qrcode"></div>
+<div class="url" id="gameUrl"></div>
+<p><button onclick="window.print()">طباعة رمز QR</button></p>
+</div>
+<script>
+const url="https://mabilmouna.github.io/science---game/";
+document.getElementById("gameUrl").textContent=url;
+new QRCode(document.getElementById("qrcode"),{text:url,width:256,height:256,colorDark:"#7a0019",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+</script>
+</body>
+</html>
